@@ -35,8 +35,8 @@ trait SyncCollection {
   /** really find one doc by any query, not just id like in legacy **/
   def findOne(doc: BsonDoc): Option[BsonDoc] = findOne(Find().query(doc))
 
-  def findOne(find: Find): Option[BsonDoc] = {
-    val cursor = underlying.find(find._query, find._keys)
+  def findOne(findv: Find): Option[BsonDoc] = {
+    val cursor = find(findv)
     if (cursor.hasNext)
       Option(cursor.next())
     else
@@ -59,6 +59,7 @@ trait SyncCollection {
 
   def findAs[T](find: Find)(implicit c: FromBsonDoc[T]): Iterator[T] = {
     val underlyingIter = underlying.find(find._query, find._keys)
+    find.applyCursorSettings(underlyingIter)
     new Iterator[T] {
       def hasNext: Boolean = underlyingIter.hasNext
 
@@ -90,6 +91,13 @@ case class Find(_query: BsonDoc = Bson.doc(), _sort: Option[BsonDoc] = None, _ke
                 _batchSize: Option[Int] = None, _limit: Option[Int] = None,
                 _skip: Option[Int] = None) {
 
+  def applyCursorSettings(cursor: DBCursor) {
+    _batchSize.foreach(cursor.batchSize)
+    _skip.foreach(cursor.skip)
+    _limit.foreach(cursor.limit)
+    _sort.foreach(cursor.sort(_))
+  }
+
   def query(doc: BsonDoc): Find = copy(_query = doc)
 
   def keys(keys: BsonDoc) = copy(_keys = keys)
@@ -106,14 +114,12 @@ case class Find(_query: BsonDoc = Bson.doc(), _sort: Option[BsonDoc] = None, _ke
 
 object MongoIterator {
   def apply(underlying: DBCursor, find: Find): MongoIterator = new MongoIterator(underlying, find)
+
 }
 
 class MongoIterator(val underlying: DBCursor, find: Find) extends Iterator[BsonDoc] {
 
-  find._batchSize.foreach(underlying.batchSize)
-  find._skip.foreach(underlying.skip)
-  find._limit.foreach(underlying.limit)
-  find._sort.foreach(underlying.sort(_))
+  find.applyCursorSettings(underlying)
 
   def hasNext: Boolean = underlying.hasNext
 
