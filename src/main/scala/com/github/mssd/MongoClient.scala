@@ -2,6 +2,7 @@ package com.github.mssd
 
 import com.mongodb.{MongoClient => LegacyMongoClient, _}
 import com.mongodb.gridfs.GridFS
+import com.github.mssd.Implicits._
 
 object MongoClient {
   val defaultDurability = WriteConcern.ACKNOWLEDGED
@@ -40,5 +41,15 @@ class MongoDatabase(val underlying: DB) {
   def gridFs: GridFS = new GridFS(underlying)
 
   def gridFs(rootName: String): GridFS = new GridFS(underlying, rootName)
+
+  def createCollection(name: String, options: BsonDoc) = underlying.createCollection(name, options)
+
+  def createCappedCollection(name: String, sizeInBytes: Long, maxNrOfDocs: Option[Int]) = underlying.createCollection(name, Bson.doc(
+    "capped" -> true,
+    "size" -> sizeInBytes
+  ) ++ (maxNrOfDocs match {
+    case Some(size) => Bson.doc("max" -> size)
+    case None => Bson.doc()
+  }))
 
 }
