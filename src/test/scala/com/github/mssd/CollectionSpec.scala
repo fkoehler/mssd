@@ -1,6 +1,5 @@
 package com.github.mssd
 
-import concurrent.Await
 import Implicits._
 import scala.Predef._
 import org.specs2.mutable.Specification
@@ -52,6 +51,10 @@ class CollectionSpec extends Specification with BeforeExample {
 
       coll.find(find).size must beEqualTo(1)
       coll.find(find).next must beEqualTo(Bson.doc("_id" -> 70, "name" -> "fabian"))
+    }
+    "find a doc by regex" in {
+      coll.save(simpleDoc)
+      coll.find(Bson.doc("name" -> "^fab".r)).size must beEqualTo(1)
     }
     "find a doc by query (managed resource)" in {
       coll.save(simpleDoc)

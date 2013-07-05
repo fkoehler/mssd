@@ -2,6 +2,7 @@ package com.github.mssd
 
 import scala.language.implicitConversions
 import org.joda.time.DateTime
+import scala.util.matching.Regex
 
 
 case object Bson {
@@ -75,6 +76,10 @@ trait ToBsonImplicits {
     def toBson(v: Boolean): BsonElement = new BsonBoolean(v)
   }
 
+  implicit object RegexToBsonElement extends ToBsonElement[Regex] {
+    def toBson(v: Regex): BsonElement = new BsonRegex(v)
+  }
+
 }
 
 trait FromBsonImplicits {
@@ -141,6 +146,10 @@ trait FromBsonImplicits {
 
   implicit object BooleanFromBsonElement extends FromBsonElement[Boolean] {
     def fromBson(v: BsonElement): Boolean = v.asInstanceOf[BsonBoolean].value
+  }
+
+  implicit object RegexFromBsonElement extends FromBsonElement[Regex] {
+    def fromBson(v: BsonElement): Regex = v.asInstanceOf[BsonRegex].value
   }
 
 }
@@ -227,6 +236,10 @@ case class BsonDateTime(value: DateTime) extends BsonElement {
 
 case class BsonBoolean(value: Boolean) extends BsonElement {
   def toStr(level: Int) = value.toString
+}
+
+case class BsonRegex(value: Regex) extends BsonElement {
+  def toStr(level: Int) = "/" + value.toString + "/"
 }
 
 case class BsonAny(value: Any) extends BsonElement {

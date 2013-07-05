@@ -1,11 +1,9 @@
 package com.github.mssd
 
-import java.util.Date
 import org.joda.time.{Instant, DateTime}
-import com.mongodb.{BasicDBObject, BasicDBList, BasicDBObjectBuilder, DBObject}
+import com.mongodb.{BasicDBList, BasicDBObjectBuilder, DBObject}
 import org.bson.types.ObjectId
-import scala.collection.JavaConversions._
-import java.{lang, util}
+import java.lang
 import scala.Some
 
 object Implicits extends BsonDocImplicits with BsonImplicits
@@ -47,6 +45,7 @@ trait BsonDocImplicits {
           case None => null
         }
       case BsonBoolean(v) => new java.lang.Boolean(v)
+      case BsonRegex(v) => v.pattern
       case BsonInt(v) => new java.lang.Integer(v)
       case BsonLong(v) => new java.lang.Long(v)
       case BsonDateTime(v) => v.toInstant.toDate
@@ -61,7 +60,7 @@ trait BsonDocImplicits {
         case v: DateTime => v.toInstant.toDate
         case v: Boolean => new java.lang.Boolean(v)
       }
-      case v @ _ => throw new RuntimeException("not yet implemented for value: " + v)
+      case v@_ => throw new RuntimeException("not yet implemented for value: " + v)
     }
   }
 
@@ -87,6 +86,7 @@ trait BsonDocImplicits {
       case e: String => BsonString(e)
       case null => BsonNull
       case e: java.lang.Boolean => BsonBoolean(e)
+      case e: java.util.regex.Pattern => BsonRegex(e.toString.r)
       case e: java.util.Date => BsonDateTime(new Instant(e.getTime).toDateTime)
       case e: BasicDBList => e.foldLeft(Bson.arr()) {
         (array, element) =>
