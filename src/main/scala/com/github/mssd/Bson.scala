@@ -169,26 +169,39 @@ case class BsonDoc(elements: Seq[(String, BsonElement)]) extends BsonElement {
 
   def apply[T](key: String)(implicit c: FromBsonElement[T]): T = as(key)
 
-  def as[T](key: String)(implicit c: FromBsonElement[T]): T = c.fromBson(get(key))
+  def as[T](key: String)(implicit c: FromBsonElement[T]): T = try {
+    c.fromBson(get(key))
+  } catch {
+    case e: java.lang.ClassCastException => println("Class cast exception during load for key " + key + " of doc : " + toString()); throw e;
+  }
 
-  def asOpt[T](key: String)(implicit c: FromBsonElement[T]): Option[T] = elements.find(kv => kv._1 == key) match {
-    case Some(kv) => Some(c.fromBson(kv._2))
-    case None => None
+  def asOpt[T](key: String)(implicit c: FromBsonElement[T]): Option[T] = try {
+    elements.find(kv => kv._1 == key) match {
+      case Some(kv) => Some(c.fromBson(kv._2))
+      case None => None
+    }
+  } catch {
+    case e: java.lang.ClassCastException => println("Class cast exception during load for key " + key + " of doc : " + toString()); throw e;
   }
 
   /** return None if the key is found but the value is a BsonNull **/
-  def asNullableOpt[T](key: String)(implicit c: FromBsonElement[T]): Option[T] = elements.find(kv => kv._1 == key) match {
-    case Some(kv) => kv._2 match {
-      case null => None
-      case BsonNull => None
-      case e: BsonElement => Some(c.fromBson(e))
+  def asNullableOpt[T](key: String)(implicit c: FromBsonElement[T]): Option[T] = try {
+    elements.find(kv => kv._1 == key) match {
+      case Some(kv) => kv._2 match {
+        case null => None
+        case BsonNull => None
+        case e: BsonElement => Some(c.fromBson(e))
+      }
+      case None => None
     }
-    case None => None
+  } catch {
+    case e: java.lang.ClassCastException => println("Class cast exception during load for key " + key + " of doc : " + toString()); throw e;
   }
 
-  override def toString() =  toStr()
+  override def toString() = toStr()
 
   import BsonDoc.indent
+
   def toStr(level: Int = 0): String = "{\n" + elements.foldLeft("") {
     (s, kv) =>
       s + indent(level) + s"${kv._1}: " + (if (kv._2.isInstanceOf[BsonDoc]) {
@@ -207,6 +220,7 @@ case class BsonArray(elements: Seq[BsonElement]) extends BsonElement {
   def :+(element: BsonElement): BsonArray = BsonArray(elements :+ element)
 
   import BsonDoc.indent
+
   def toStr(level: Int) = "[" + elements.map("\n" + indent(level + 1) + _.toStr(level + 2)).mkString(",") + "\n" + indent(level) + "]"
 }
 
