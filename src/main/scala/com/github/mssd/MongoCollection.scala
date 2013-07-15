@@ -13,7 +13,9 @@ class MongoCollection(val underlying: DBCollection) extends SyncCollection {
 
   def durability = underlying.getWriteConcern
 
-  def createIndex(doc: BsonDoc, options: BsonDoc) = underlying.createIndex(doc, options)
+  def createIndex(doc: BsonDoc, options: BsonDoc = Bson.doc()) = underlying.createIndex(doc, options)
+
+  def rename(newName: String, dropTarget: Boolean = false): MongoCollection = new MongoCollection(underlying.rename(newName, dropTarget))
 
 }
 
