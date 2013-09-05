@@ -1,0 +1,6 @@
+- mssd oder async treiber:
+  - FromBsonDoc auflösen oder umgekehrt über implicit conv
+  - README aufarbeiten (non blocking in den text)
+  - Js* converter dort verfügbar machen
+  - mehr tests und alle testse grün und sauber strukturieren
+

@@ -9,11 +9,11 @@ object MssdBuild extends Build {
     settings = Project.defaultSettings ++ Seq(
       name := "mssd",
       organization := "com.github.mssd",
-      version := "0.1.8",
-      scalaVersion := "2.10.1",
+      version := "0.1.9",
+      scalaVersion := "2.10.2",
       libraryDependencies ++= Seq(
         "org.specs2" %% "specs2" % "1.14" % "test",
-		    "org.mongodb" % "mongo-java-driver" % "2.11.1",
+		    "org.mongodb" % "mongo-java-driver" % "2.11.2",
         "joda-time" % "joda-time" % "2.2",
         "org.joda" % "joda-convert" % "1.3.1"
       ),
