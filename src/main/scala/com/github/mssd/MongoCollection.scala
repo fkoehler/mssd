@@ -83,7 +83,7 @@ trait SyncCollection {
 
   def count(query: BsonDoc): Long = underlying.count(query)
 
-  def group(keys: BsonDoc, cond: BsonDoc, initial: BsonDoc, reduce: BsonDoc): BsonDoc = underlying.group(keys, cond, initial, reduce)
+  def group(keys: BsonDoc, cond: BsonDoc, initial: BsonDoc, reduce: String): BsonDoc = underlying.group(keys, cond, initial, reduce)
 
 }
 
