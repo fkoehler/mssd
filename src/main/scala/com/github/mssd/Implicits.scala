@@ -77,7 +77,7 @@ trait BsonDocImplicits {
     bsonDoc
   }
 
-  private def elementToBsonElement(element: Any): BsonElement = {
+  def elementToBsonElement(element: Any): BsonElement = {
     element match {
       case o: ObjectId => BsonObjectId(o.toString)
       case e: java.lang.Integer => BsonInt(e)
