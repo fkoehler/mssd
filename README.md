@@ -1,4 +1,4 @@
-# MongoDB Synchronous Scala Driver# 
+# MongoDB Synchronous Scala Driver # 
 
 MongoDB Synchronous Scala Driver (mssd) is based on the plain old legacy [mongodb java driver](http://docs.mongodb.org/ecosystem/drivers/java/) and adds some Scala beauty to it.
 It's similar to [casbash](http://mongodb.github.io/casbah/) but with a different api which was inspired by the [Play2 JSON API](http://www.playframework.com/documentation/2.2.0/ScalaJson) for the bson documents and by the [mongodb-async-driver](http://www.allanbank.com/mongodb-async-driver/index.html) for it's general API.
