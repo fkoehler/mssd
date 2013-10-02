@@ -9,3 +9,6 @@ This driver is work in progress and not complete yet. Please feel free to contri
 
 Please have a look at the [project page](http://www.webpageanalyse.com/dev/mssd) to learn on how to install the driver
 and with some simple use cases on how to use it.
+
+There is also a [google group](https://groups.google.com/forum/?hl=de#!forum/mongodb-synchronous-scala-driver) for general
+communication.
