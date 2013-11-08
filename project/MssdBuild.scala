@@ -9,7 +9,7 @@ object MssdBuild extends Build {
     settings = Project.defaultSettings ++ Seq(
       name := "mssd",
       organization := "com.github.mssd",
-      version := "0.1.11",
+      version := "0.1.12",
       scalaVersion := "2.10.2",
       libraryDependencies ++= Seq(
         "org.specs2" %% "specs2" % "1.14" % "test",

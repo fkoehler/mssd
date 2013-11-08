@@ -3,7 +3,6 @@ package com.github.mssd
 import Implicits._
 import com.mongodb._
 import scala.Some
-import com.github.mssd.BsonArray
 import scala.collection.JavaConversions._
 
 class MongoCollection(val underlying: DBCollection) extends SyncCollection {
@@ -85,6 +84,9 @@ trait SyncCollection {
   def count: Long = underlying.count()
 
   def count(query: BsonDoc): Long = underlying.count(query)
+
+  def distinct(field: String, query: BsonDoc): List[String] = underlying.distinct(field, query).asInstanceOf[BasicDBList]
+    .map(elementToBsonElement(_).as[String]).toList
 
   def group(keys: BsonDoc, cond: BsonDoc, initial: BsonDoc, reduce: String): BsonArray =
     underlying.group(keys, cond, initial, reduce).asInstanceOf[BasicDBList].foldLeft(Bson.arr()) {
