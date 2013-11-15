@@ -26,6 +26,8 @@ trait SyncCollection {
 
   def delete() = underlying.remove(Bson.doc())
 
+  def remove(query: BsonDoc) = underlying.remove(query)
+
   def insert[T](model: T)(implicit c: ToBsonDoc[T]): WriteResult = underlying.insert(c.toBson(model))
 
   def insert(doc: BsonDoc): WriteResult = underlying.insert(doc)
