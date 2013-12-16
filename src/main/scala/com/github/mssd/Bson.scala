@@ -136,6 +136,15 @@ trait FromBsonImplicits {
     def fromBson(v: BsonElement): Long = v.asInstanceOf[BsonLong].value
   }
 
+  implicit object BigDecimalFromBsonElement extends FromBsonElement[BigDecimal] {
+    def fromBson(v: BsonElement): BigDecimal = v match {
+      case e: BsonLong => BigDecimal(e.value)
+      case e: BsonDouble => BigDecimal(e.value)
+      case e: BsonInt => BigDecimal(e.value)
+      case e: BsonString => BigDecimal(e.value)
+    }
+  }
+
   implicit object DoubleFromBsonElement extends FromBsonElement[Double] {
     def fromBson(v: BsonElement): Double = v.asInstanceOf[BsonDouble].value
   }
