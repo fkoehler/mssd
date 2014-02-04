@@ -170,6 +170,8 @@ case class BsonDoc(elements: Seq[(String, BsonElement)]) extends BsonElement {
   /** add key, value pair */
   def +(keyValue: (String, BsonElement)): BsonDoc = BsonDoc(elements :+ keyValue)
 
+  def -(key: String): BsonDoc = BsonDoc(elements.filterNot(_._1 == key))
+
   def keys: Seq[String] = elements.map(_._1)
 
   def get(key: String): BsonElement = elements.find(kv => kv._1 == key).get._2
