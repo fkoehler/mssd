@@ -124,6 +124,13 @@ trait FromBsonImplicits {
     def fromBson(v: BsonElement): String = v.asInstanceOf[BsonString].value
   }
 
+  implicit object NullableStringFromBsonElement extends FromBsonElement[Option[String]] {
+    def fromBson(v: BsonElement): Option[String] = v match {
+      case BsonNull => None
+      case e: BsonString => Some(e.value)
+    }
+  }
+
   implicit object DocFromBsonElement extends FromBsonElement[BsonDoc] {
     def fromBson(v: BsonElement): BsonDoc = v.asInstanceOf[BsonDoc]
   }
