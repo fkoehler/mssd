@@ -3,6 +3,7 @@ package com.github.mssd
 import com.mongodb.{MongoClient => LegacyMongoClient, _}
 import com.mongodb.gridfs.GridFS
 import com.github.mssd.Implicits._
+import scala.collection.JavaConversions._
 
 object MongoClient {
   val defaultDurability = WriteConcern.ACKNOWLEDGED
@@ -13,6 +14,10 @@ object MongoClient {
 
   def apply(host: String, port: Int, options: MongoClientOptions): MongoClient = {
     new MongoClient(new LegacyMongoClient(new ServerAddress(host, port), options))
+  }
+
+  def apply(host: String, port: Int, options: MongoClientOptions, credentials: List[MongoCredential]): MongoClient = {
+    new MongoClient(new LegacyMongoClient(new ServerAddress(host, port), credentials, options))
   }
 
   def apply(host: String): MongoClient = {
